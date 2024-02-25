@@ -7,6 +7,17 @@ class App {
     // Game logic for a number guessing game
     fun playNumberGame(digitsToGuess: Int = 4) {
         //TODO: build a menu which calls the functions and works with the return values
+        val hiddenNumber = generateRandomNonRepeatingNumber(digitsToGuess)
+        while(true){
+            println("Enter your guess, the number has $digitsToGuess digits")
+            val stringInput = readln()
+
+            if(checkUserInputAgainstGeneratedNumber(stringInput.toInt(), hiddenNumber) == CompareResult(digitsToGuess, digitsToGuess)){
+                println("You have guessed the number")
+                break
+            }
+        }
+        return
     }
 
     /**
@@ -25,7 +36,23 @@ class App {
      */
     val generateRandomNonRepeatingNumber: (Int) -> Int = { length ->
         //TODO implement the function
-        0   // return value is a placeholder
+        if(length < 1 || length > 9){
+            throw IllegalArgumentException("Length is more than 9 or less than 1")
+        }else{
+            val numbers: MutableList<Int> = ArrayList()
+            for (i in 1..9) {
+                numbers.add(i)
+            }
+
+            numbers.shuffle()
+
+            var result = ""
+            for (i in 0 until length) {
+                result += numbers[i].toString()
+            }
+            result.toInt()
+        }
+
     }
 
     /**
@@ -46,11 +73,35 @@ class App {
      */
     val checkUserInputAgainstGeneratedNumber: (Int, Int) -> CompareResult = { input, generatedNumber ->
         //TODO implement the function
-        CompareResult(0, 0)   // return value is a placeholder
+        val digits = generatedNumber.toString().toCharArray()
+        val guessed: CharArray = input.toString().toCharArray()
+
+        var n: Int = 0
+        var m: Int = 0
+
+        //println("A random four digit number was generated with no repeating digits. Guess the number:")
+
+        if(digits.size != guessed.size){
+            throw IllegalArgumentException("Invalid Input")
+        }else{
+            for (i in digits.indices){
+                for (j in digits.indices){
+                    if(guessed[i] == digits[j]){
+                        n++
+                    }
+                }
+                if(guessed[i] == digits[i]){
+                    m++
+                }
+            }
+            println(CompareResult(n, m))
+            CompareResult(n, m)
+        }
     }
 }
 
 fun main() {
-    println("Hello World!")
     // TODO: call the App.playNumberGame function with and without default arguments
+    val app = App()
+    app.playNumberGame()
 }
